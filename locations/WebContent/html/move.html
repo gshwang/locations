@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Locations - STOMP Example</title>
+<script type="text/javascript">
+	window.addEventListener("load", eventWindowLoaded, false);
+	function eventWindowLoaded()
+	{
+		initCanvas1();
+	}
+	function initCanvas1(){
+		var canvas1 = document.getElementById("myCanvas"); 
+		var context1 = canvas1.getContext("2d"); 
+		var busImage = new Image();
+		var busImage2 = new Image();
+		var stopImage = new Image();
+		
+		busImage.src = "../images/bus_red.png";
+		busImage2.src = "../images/bus_green.png";
+		stopImage.src ="../images/busline_blue.png";
+		
+		stopImage.addEventListener('load', eventCatImageLoaded, false); 
+		function eventCatImageLoaded()
+		{
+			stopDraw();
+		}
+		
+		function stopDraw()
+		{
+			context1.drawImage(stopImage, 0, 50);
+			setInterval(50);
+			context1.drawImage(busImage, 530, 0);
+			setInterval(50);
+			context1.drawImage(busImage2, 370, 100);
+		}
+
+		function busStartUp()
+		{
+			
+		}
+		function bus2StartUp()
+		{
+			setInterval(drawBusImage2, 50);
+		}
+		
+		function drawBusImage()
+		{		
+			context1.drawImage(busImage, 530, 0);
+		}
+		
+		function drawBusImage2()
+		{		
+			context1.drawImage(busImage2, 370, 100);
+		}
+		
+	    var flashStyle = new ol.style.Circle({
+	        radius: radius,
+	        snapToPixel: false,
+	        stroke: new ol.style.Stroke({
+	          color: 'rgba(255, 0, 0, ' + opacity + ')',
+	          width: 1,
+	          opacity: opacity
+	        })
+	      });
+	    
+		
+		
+	}
+	
+
+	
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="700" height="400"></canvas>
+</body>
+</html>
