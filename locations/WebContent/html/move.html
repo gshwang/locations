@@ -3,76 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <title>Locations - STOMP Example</title>
-<script type="text/javascript">
-	window.addEventListener("load", eventWindowLoaded, false);
-	function eventWindowLoaded()
+    <script type="text/javascript">
+	var bus1Image = new Image();
+	var bus2Image = new Image();
+	var stopImage = new Image();
+	
+	bus1Image.src = "../images/bus_red.png";
+	bus2Image.src = "../images/bus_green.png";
+	stopImage.src ="../images/busline_blue.png";
+	
+	var stopX = 0; // current bus1 position X
+	var stopY = 50; // current bus1 position Y
+	
+	var bus1X = 530; // current bus1 position X
+	var bus1Y = 0; // current bus1 position Y
+	var bus2X = 370; // current bus1 position X
+	var bus2Y = 100; // current bus1 position Y
+	
+	var canvas;
+	var context;
+	function canvasBusStop(){
+		canvas = document.getElementById("myCanvas"); 
+		if (canvas.getContext){
+			context = canvas.getContext("2d");	
+		}
+		stopDraw();
+		window.addEventListener('keydown', whatKey, true);
+	}
+		 
+	function stopDraw()
 	{
-		initCanvas1();
-	}
-	function initCanvas1(){
-		var canvas1 = document.getElementById("myCanvas"); 
-		var context1 = canvas1.getContext("2d"); 
-		var busImage = new Image();
-		var busImage2 = new Image();
-		var stopImage = new Image();
-		
-		busImage.src = "../images/bus_red.png";
-		busImage2.src = "../images/bus_green.png";
-		stopImage.src ="../images/busline_blue.png";
-		
-		stopImage.addEventListener('load', eventCatImageLoaded, false); 
-		function eventCatImageLoaded()
-		{
-			stopDraw();
-		}
-		
-		function stopDraw()
-		{
-			context1.drawImage(stopImage, 0, 50);
-			setInterval(50);
-			context1.drawImage(busImage, 530, 0);
-			setInterval(50);
-			context1.drawImage(busImage2, 370, 100);
-		}
-
-		function busStartUp()
-		{
-			
-		}
-		function bus2StartUp()
-		{
-			setInterval(drawBusImage2, 50);
-		}
-		
-		function drawBusImage()
-		{		
-			context1.drawImage(busImage, 530, 0);
-		}
-		
-		function drawBusImage2()
-		{		
-			context1.drawImage(busImage2, 370, 100);
-		}
-		
-	    var flashStyle = new ol.style.Circle({
-	        radius: radius,
-	        snapToPixel: false,
-	        stroke: new ol.style.Stroke({
-	          color: 'rgba(255, 0, 0, ' + opacity + ')',
-	          width: 1,
-	          opacity: opacity
-	        })
-	      });
-	    
-		
-		
+		context.drawImage(stopImage, stopX, stopY);
+		context.drawImage(bus1Image, bus1X, bus1Y);
+		context.drawImage(bus2Image, bus2X, bus2Y);
 	}
 	
+    function whatKey(evt) {
+		switch (evt.keyCode) {
+          // Left arrow.
+			case 37:
+	   			  setInterval(function(){
+	   				  if(bus1X > 370){
+	   					context.clearRect(bus1X, bus1Y, bus1Image.width, bus1Image.height);
+		   			    bus1X = bus1X - 5;
+		   			    context.drawImage(bus1Image, bus1X, bus1Y);	  
+	   				  }
+	   			  }, 50);  
+		   	break;
+	   }
+	}
 
-	
 </script>
 </head>
-<body>
+<body onload="canvasBusStop()">
+    <h1>
+      Canvas Space Game
+    </h1>	
 	<canvas id="myCanvas" width="700" height="400"></canvas>
 </body>
 </html>
