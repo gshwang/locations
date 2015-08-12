@@ -10,7 +10,7 @@
     	}
     </style>
   </head>
-  <body>
+  <body onload="canvasBusStop()">
     <h1>Locations - STOMP Example</h1>
       <form id='connect_form'>
         <fieldset>
@@ -35,7 +35,7 @@
         </fieldset>
       </form>
       <hr>
-<canvas id="canvas" width="1000" height="500"  >Canvas</canvas>
+<canvas id="canvas" width="1500" height="600"  >Canvas</canvas>
 		<div class="letter" id="target">
           <h3><a href="#">click</a></h3>
       	</div>
@@ -186,6 +186,23 @@ var canvas = document.getElementById("canvas");
 // Specify a 2-D canvas type.
 var context = canvas.getContext("2d");
 
+
+var bus1Image = new Image();
+var bus2Image = new Image();
+var stopImage = new Image();
+
+bus1Image.src = "../images/bus_red.png";
+bus2Image.src = "../images/bus_green.png";
+stopImage.src ="../images/busline_blue.png";
+
+var stopX = 00; // current bus1 position X
+var stopY = 100; // current bus1 position Y
+
+var bus1X = 1050; // current bus1 position X
+var bus1Y = 0; // current bus1 position Y
+var bus2X = 740; // current bus1 position X
+var bus2Y = 200; // current bus1 position Y
+
 function showPoint(x, y) {
 	// Start the path.
 	context.beginPath();
@@ -194,7 +211,7 @@ function showPoint(x, y) {
 	context.strokeStyle = "rgb(0, 162, 232)";
 
 	// Define the circle using an arc.
-	context.arc(x * 10, y * 10, 10, 0, 2 * Math.PI, true);
+	context.arc(x+bus1X , y , 10, 0, 2 * Math.PI, true);
 
 	context.fill();
 	// draw the circle.
@@ -252,15 +269,15 @@ $(document).ready(function() {
 		  	  html += "rssi : " + data[i].rssi +"&nbsp;"+"</li>";
 		  	  
 			   if(data[i].uuid =='xxxxxxxx' && data[i].minor =='1' ){
-				  lengthMA = data[i].rssi * 100.0;
+				  lengthMA = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='2' ){
-				  lengthMB = data[i].rssi * 100.0;
+				  lengthMB = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='3' ){
-				  lengthMC = data[i].rssi * 100.0;
+				  lengthMC = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='4' ){
-				  lengthMD = data[i].rssi * 100.0;
+				  lengthMD = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='5' ){
-				  lengthME = data[i].rssi * 100.0;
+				  lengthME = data[i].accur * 100.0;
 			  }	 	
 	  	  }
 	      
@@ -410,6 +427,41 @@ for (k = 1; k <= set.length; k++) {
 	}
 }
 return combs;
+}
+
+
+
+var canvas;
+var context;
+function canvasBusStop(){
+	canvas = document.getElementById("canvas"); 
+	if (canvas.getContext){
+		context = canvas.getContext("2d");	
+	}
+	stopDraw();
+	window.addEventListener('keydown', whatKey, true);
+}
+	 
+function stopDraw()
+{
+	context.drawImage(stopImage, stopX, stopY, stopImage.width*2, stopImage.height*2);
+	context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+	context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
+}
+
+function whatKey(evt) {
+	switch (evt.keyCode) {
+      // Left arrow.
+		case 37:
+   			  setInterval(function(){
+   				  if(bus1X > 740){
+   					context.clearRect(bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+	   			    bus1X = bus1X - 5;
+	   			    context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+   				  }
+   			  }, 50);  
+	   	break;
+   }
 }
     </script>
   </body>
