@@ -252,15 +252,15 @@ $(document).ready(function() {
 		  	  html += "rssi : " + data[i].rssi +"&nbsp;"+"</li>";
 		  	  
 			   if(data[i].uuid =='xxxxxxxx' && data[i].minor =='1' ){
-				  lengthMA = data[i].rssi * 100.0;
+				  lengthMA = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='2' ){
-				  lengthMB = data[i].rssi * 100.0;
+				  lengthMB = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='3' ){
-				  lengthMC = data[i].rssi * 100.0;
+				  lengthMC = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='4' ){
-				  lengthMD = data[i].rssi * 100.0;
+				  lengthMD = data[i].accur * 100.0;
 			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='5' ){
-				  lengthME = data[i].rssi * 100.0;
+				  lengthME = data[i].accur * 100.0;
 			  }	 	
 	  	  }
 	      
