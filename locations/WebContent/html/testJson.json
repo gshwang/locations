@@ -1,9 +1,9 @@
 
 
 [
-  {"uuid": "xxxxxxxx",   "major": "100",   "minor": "1",  "rssi": "0.65"  },
-  {"uuid":"xxxxxxxx", "major":"100","minor":"2","rssi":"0.75"},
-  {"uuid":"xxxxxxxx", "major":"100","minor":"3","rssi":"0.50"},  
-  {"uuid":"xxxxxxxx", "major":"100","minor":"4","rssi":"0.60"},  
-  {"uuid":"xxxxxxxx", "major":"100","minor":"5","rssi":"0.70"}  
+  {"uuid": "xxxxxxxx",   "major": "100",   "minor": "1",  "accur": "0.65"  },
+  {"uuid":"xxxxxxxx", "major":"100","minor":"2","accur":"0.75"},
+  {"uuid":"xxxxxxxx", "major":"100","minor":"3","accur":"0.50"},  
+  {"uuid":"xxxxxxxx", "major":"100","minor":"4","accur":"0.60"},  
+  {"uuid":"xxxxxxxx", "major":"100","minor":"5","accur":"0.70"}  
 ]
