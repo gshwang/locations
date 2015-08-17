@@ -203,15 +203,22 @@ var bus1Y = 0; // current bus1 position Y
 var bus2X = 740; // current bus1 position X
 var bus2Y = 200; // current bus1 position Y
 
-function showPoint(x, y) {
+function showPoint(x, y, bus) {
 	// Start the path.
 	context.beginPath();
 
 	// Define the stroke color in RGB for blue.
 	context.strokeStyle = "rgb(0, 162, 232)";
 
-	// Define the circle using an arc.
-	context.arc(x+bus1X , y , 10, 0, 2 * Math.PI, true);
+	alert("bus : " + bus);
+	
+	if( bus == 'R' ){
+		// Define the circle using an arc.
+		context.arc(x+bus1X , y , 10, 0, 2 * Math.PI, true);	
+	} else {
+		// Define the circle using an arc.
+		context.arc(x+bus2X , y+bus2Y , 10, 0, 2 * Math.PI, true);
+	}
 
 	context.fill();
 	// draw the circle.
@@ -221,7 +228,7 @@ function showPoint(x, y) {
 
 $(document).ready(function() {
 	  $('#target').click(function() {
-	    $.getJSON('testJson.json', function(data) {
+	    $.getJSON('beaconJson.json', function(data) {
 	      var html = '';	
 	      
 	      /*
@@ -262,22 +269,22 @@ $(document).ready(function() {
 	      var z=-1.0; 
 	      
 	      //비콘에서 입력받은 정보 비콘과 스마트폰과의 거리 정보 저장
-	      for(var i=0; i<data.length;i++){	  	   
-		  	  html += "<li>uuid : " + data[i].uuid +"&nbsp;";
-		  	  html += "major : " + data[i].major +"&nbsp;";
-		  	  html += "minor : " + data[i].minor +"&nbsp;";
-		  	  html += "rssi : " + data[i].rssi +"&nbsp;"+"</li>";
+	      for(var i=0; i< data.beacons.length;i++){	  
+		  	  html += "<li>uuid : " + data.beacons[i].uuid +"&nbsp;";
+		  	  html += "major : " + data.beacons[i].major +"&nbsp;";
+		  	  html += "minor : " + data.beacons[i].minor +"&nbsp;";
+		  	  html += "rssi : " + data.beacons[i].rssi +"&nbsp;"+"</li>";
 		  	  
-			   if(data[i].uuid =='xxxxxxxx' && data[i].minor =='1' ){
-				  lengthMA = data[i].accur * 100.0;
-			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='2' ){
-				  lengthMB = data[i].accur * 100.0;
-			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='3' ){
-				  lengthMC = data[i].accur * 100.0;
-			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='4' ){
-				  lengthMD = data[i].accur * 100.0;
-			  }	else if(data[i].uuid =='xxxxxxxx' && data[i].minor =='5' ){
-				  lengthME = data[i].accur * 100.0;
+			   if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='1' ){
+				  lengthMA = data.beacons[i].accur * 100.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='2' ){
+				  lengthMB = data.beacons[i].accur * 100.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='3' ){
+				  lengthMC = data.beacons[i].accur * 100.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='4' ){
+				  lengthMD = data.beacons[i].accur * 100.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='5' ){
+				  lengthME = data.beacons[i].accur * 100.0;
 			  }	 	
 	  	  }
 	      
@@ -350,9 +357,17 @@ $(document).ready(function() {
 	     
 	  	  // alert(X+" : "+Y);
 	  	  
+	  	  var bus = '';
+	  	  
+	  	  if( data.deviceID == '123456780' ){
+	  		  bus = 'R';
+	  	  } else {
+	  		  bus = 'G';
+	  	  }
+	  	  
 	  	  // 우리가 원하는 공간 범위 0<= X <= 100 && 0<= Y <=50 일때 캔퍼스에 좌표 표시
 	  	  if(X >= 0 && X <=100 && Y >=0 && Y<=50){
-	  		showPoint(X,Y);
+	  		showPoint(X,Y,bus);
 	  	  }
 	  	  
 	      console.log(html);
@@ -458,6 +473,15 @@ function whatKey(evt) {
    					context.clearRect(bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
 	   			    bus1X = bus1X - 5;
 	   			    context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+   				  }
+   			  }, 50);  
+	   	break;
+		case 38:
+   			  setInterval(function(){
+   				  if(bus2X > 400){
+   					context.clearRect(bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
+	   			    bus2X = bus2X - 5;
+	   			    context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
    				  }
    			  }, 50);  
 	   	break;

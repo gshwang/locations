@@ -1,0 +1,21 @@
+{"deviceID":"123456789",
+
+ "ts":"yyyyMMddhhmmss",
+
+ "beacons":
+
+     [
+
+        {"uuid":"xxxxxxxx", "major":"100","minor":"1","accur":"0.55"},
+
+        {"uuid":"xxxxxxxx", "major":"100","minor":"2","accur":"0.60"},
+
+        {"uuid":"xxxxxxxx", "major":"100","minor":"3","accur":"0.55"},
+
+        {"uuid":"xxxxxxxx", "major":"100","minor":"4","accur":"0.45"},
+
+        {"uuid":"xxxxxxxx", "major":"100","minor":"5","accur":"0.50"}
+
+     ]
+
+}
