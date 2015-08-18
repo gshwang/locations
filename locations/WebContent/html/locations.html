@@ -15,7 +15,7 @@
       <form id='connect_form'>
         <fieldset>
           <label>WebSocket URL</label>
-          <input name=url id='connect_url' value='ws://jdev2dev.iptime.org:61614' type="text"size=20>
+          <input name=url id='connect_url' value='ws://172.30.1.33:61614' type="text"size=20>
           <button id='connect_button' type="submit">Connect</button>
           <button type="button" id='disconnect_button' disabled>Disconnect</button>
         </fieldset>
@@ -24,7 +24,7 @@
         <fieldset>
           <legend>Send Text</legend>
           Device: <select id="deviceID">
-          			<option value="100">100</option>
+          			<option value="C7984C40-6269-4B63-AD67-CACA06B1C2BC">100</option>
           			<option value="101">101</option>
           			<option value="102">102</option>
           		  </select>
@@ -128,14 +128,168 @@ $(document).ready(function() {
       client.subscribe(destination, function(message) {
         // this function is called every time a message is received
         // create an object from the JSON string contained in the message body
-        var payload = JSON.parse(message.body);
-        var deviceID = payload.deviceID;
-        if (!$("#deviceID option[value='" + deviceID + "']").length) {
+        //////////////
+var html = '';
+//console.log("hoontaky");
+        //console.log(message);
+		  var data = JSON.parse(message.body);
+	      /*
+	      * 스마트폰 M , 비콘 A,B,C,D,E 일때
+	      * 스마트폰과 비콘 간의 거리  lengthMA,lengthMB,lengthMC,lengthMD,lengthME	  
+	      */
+	      var lengthMA = '';	      
+	      var lengthMB = '';	      
+	      var lengthMC = '';	      
+	      var lengthMD = '';	      
+	      var lengthME = '';	      
+	      
+	      /*
+		  * 비콘 A,B,C,D,E 의 공간 좌표 
+		  * 3차원 좌표지만 천장에 같은 높이에 모두 설치할 것이므로 z 값은 모두 0 이다. 따라서 x,y 좌표만 간단히 표시함	  
+		  */
+	      var A = new Array(0,0);		//A(0,0,0)
+	      var B = new Array(60,0);		//B(100,0,0)
+	      var C = new Array(30,40);		//C(40,50,0)
+	      var D = new Array(60,50);	//D(100,50,0) 
+	      var E = new Array(0,50);		//E(0,50,0)    
+	    
+	      
+		
+	      /*
+		   * 비콘 A,B,C,D,E 스마트폰 M 의 좌표는 (x,y,z) 이고 
+		   * 비콘 3개당 1개의 M 의 좌표를 얻을 수 있으므로 5개 일 때 3개의 비콘을 뽑는 경우의 수는 5C3=10가지 경우의 수가 있다.
+		   * 10가지 경우의 수로 각각 스마틒폰의 공간좌표를 얻는 계산을 수행한다. 
+		   * 그 후 10가지 공간좌표의 산술평균 값을 최종 스마트폰의 좌표로 산출한다.
+		   * 단 !! 비콘의 잘못된 거리 정보로 인해 발생하는 각 공간좌표 x,y,z 에 대해 undefined 또는 Infinity 값이 발생한 좌표는 제외하고 계산한다.
+		   */
+		   
+		  //m :  10가지 경우의 수로 각각 스마틒폰의 공간좌표의 집합
+		  var m = new Array(3);	
+		  var lengthM = new Array(3);	
+	      var x=-1.0;
+	      var y=-1.0;
+	      var z=-1.0; 
+	      
+	      //비콘에서 입력받은 정보 비콘과 스마트폰과의 거리 정보 저장
+	      for(var i=0; i< data.beacons.length;i++){	  
+		  	  html += "<li>uuid : " + data.beacons[i].uuid +"&nbsp;";
+		  	  html += "major : " + data.beacons[i].major +"&nbsp;";
+		  	  html += "minor : " + data.beacons[i].minor +"&nbsp;";
+		  	  html += "rssi : " + data.beacons[i].rssi +"&nbsp;"+"</li>";
+		  	  
+			   if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='1' ){
+				  lengthMA = data.beacons[i].accur * 500.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='2' ){
+				  lengthMB = data.beacons[i].accur * 1000.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='3' ){
+				  lengthMC = data.beacons[i].accur * 1000.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='4' ){
+				  lengthMD = data.beacons[i].accur * 500.0;
+			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='5' ){
+				  lengthME = data.beacons[i].accur * 2000.0;
+			  }	 	
+	  	  }
+	      
+	      //A,B,C,D,E 비콘 중 3개 뽑는 경우의 수
+	      var aaa =   k_combinations(["A", "B", "C", "D" ,"E"], 3);
+	      var aaaLength = aaa.length;
+	      //alert(aaaLength);//경우의 수 : 5C3 = 10개
+	      var pointArray = new Array(aaaLength);
+	      
+	      
+	      for(var i=0; i<aaa.length;i++){
+	    	  //alert(aaa[i]); 
+	    	  //EX) aaa[0] = [A,B,C], aaa[1] = [A,B,D], aaa[2] = [A,B,E], aaa[3]=[A,C,D] ....aaa[9]=[C,D,E]
+	    	  for(var j=0; j<aaa[i].length;j++){
+	    		  //alert(aaa[i][j]);  
+	    		  //EX) aaa[0][0] = A , aaa[0][1] = B , aaa[0][2] = C ....
+	    		  if(aaa[i][j]=="A"){
+	    			  m[j]=A;
+	    			  lengthM[j] = lengthMA;
+	    		  } else if(aaa[i][j]=="B"){
+	    			  m[j]=B;
+	    			  lengthM[j] = lengthMB;
+	    		  } else if(aaa[i][j]=="C"){
+	    			  m[j]=C;
+	    			  lengthM[j] = lengthMC;
+	    		  } else if(aaa[i][j]=="D"){
+	    			  m[j]=D;
+	    			  lengthM[j] = lengthMD;
+	    		  } else if(aaa[i][j]=="E"){
+	    			  m[j]=E;
+	    			  lengthM[j] = lengthME;
+	    		  }
+	    		//  alert(j+" : "+m[j]+" == "+m[j][0]+" + "+m[j][1]);
+	    		 
+	    	  }
+	    	  //alert(m);
+	    	 // alert(lengthM);
+	    	 
+	    	 //공간좌표 계산 식에 따라 x,y,z 값 구함
+	    	  y=( (m[2][0]-m[1][0])*(Math.pow(lengthM[0], 2) - Math.pow(lengthM[1], 2) +Math.pow(m[1][0], 2) -Math.pow(m[0][0], 2) + Math.pow(m[1][1], 2) - Math.pow(m[0][1], 2)    )
+	      		- (m[1][0]-m[0][0])*(Math.pow(lengthM[1], 2) - Math.pow(lengthM[2], 2) +Math.pow(m[2][0], 2) -Math.pow(m[1][0], 2) + Math.pow(m[2][1], 2) - Math.pow(m[1][1], 2)    ) )
+	      		  / (2.0*(    ( m[2][0]-m[1][0] )*( m[1][1]-m[0][1] ) -  ( m[1][0]-m[0][0] )*( m[2][1]-m[1][1] )  ) ) ; 
+	      	  x= (Math.pow(lengthM[0], 2) - Math.pow(lengthM[1], 2) +Math.pow(m[1][0], 2) -Math.pow(m[0][0], 2) +Math.pow(m[1][1], 2) -Math.pow(m[0][1], 2) +2.0*(m[0][1]-m[1][1]) * y ) / (2.0*(m[1][0]-m[0][0]) ); 
+	      	
+	      	  //z의 제곱 = Math.pow(lengthM[0], 2) - Math.pow((x-m[0][0]), 2) - Math.pow((y-m[0][1]), 2)
+	      	  //x,y,z의 값이 undefined 또는 Infinit 인 경우 제외하고 pointArray 에 x,y 좌표 저장(2차원에 표시하기 때문에 z 굳이 저장 안함)
+	      	  if( Math.pow(lengthM[0], 2) - Math.pow((x-m[0][0]), 2) - Math.pow((y-m[0][1]), 2) >= 0 && !isNaN(y) && !isNaN(x)   ){
+	      			pointArray[i] = [x, y];
+	      	  } 
+	      }
+	      
+	      // pointArray 에서 undefined 또는 null 등 없는 만큼 잘라냄
+	      pointArray =pointArray.filter(function(x){return x!=undefined && x!=null;});
+	      //alert("pointArray.length : "+pointArray.length);
+	      
+	      //계산한 공간 좌표들의 산술평균을 구함
+	      var xSum = 0;
+	      var ySum = 0;
+	      for(var i=0; i<pointArray.length;i++){
+	    	  xSum = xSum + pointArray[i][0];
+	    	  ySum = ySum + pointArray[i][1];
+	    	  //alert(i+" pointArray : "+pointArray[i][0]+" ## "+pointArray[i][1]);
+	      } 
+	      
+	      //alert("X : " + x + " / Y : "+y);
+	      
+	      //최종 좌표 X, Y
+	      var X = xSum/pointArray.length;
+	      var Y = ySum/pointArray.length;
+	     
+	  	  // alert(X+" : "+Y);
+	  	  
+	  	  var bus = '';
+	  	  
+	  	  if( data.deviceID == 'C7984C40-6269-4B63-AD67-CACA06B1C2BC' ){
+	  		  bus = 'R';
+	  	  } else {
+	  		  bus = 'G';
+	  	  }
+
+	  	  
+	  	  // 우리가 원하는 공간 범위 0<= X <= 100 && 0<= Y <=50 일때 캔퍼스에 좌표 표시
+	  	 // if(X >= 0 && X <=100 && Y >=0 && Y<=50){
+	  		//checkPosition = true;
+	  		console.log(x);
+	  		console.log(y);
+	  		showPoint(x,y,bus);
+	  	  //}
+	  	  
+	  	  
+	  	  
+	      
+        
+        
+        //////////////////
+        //var payload = JSON.parse(message.body);
+        //var deviceID = payload.deviceID;
+        //if (!$("#deviceID option[value='" + deviceID + "']").length) {
           // if the device ID is not already in the list of devices we can send orders to, we add it.
-          $('#deviceID').append($('<option>', {value:deviceID}).text(deviceID));
-        }
+          //$('#deviceID').append($('<option>', {value:deviceID}).text(deviceID));
+        //}
         // show the device location on the map
-        show(deviceID, payload.lat, payload.lng);
+        //show(deviceID, payload.lat, payload.lng);
       });
     };
     // create the STOMP client
@@ -225,7 +379,7 @@ function showPoint(x, y, bus) {
 	var i = 0;
     
     setInterval(function(){
-	    if( checkPosition ){
+	    
 	    	if(i != 0){
 			    var oldStartAngle = (0 + (bb*(i-1))) * Math.PI;
 			    var oldEndAngle = (0.1 + (bb*(i-1))) * Math.PI;
@@ -258,21 +412,7 @@ function showPoint(x, y, bus) {
 			    // line color
 			    context.strokeStyle = 'gold';
 			    context.stroke();
-	    } else {
-		    //context.beginPath();
-		    //'destination-out';
-			if( bus == 'R' ){
-				// Define the circle using an arc.
-				context.arc(x+bus1X , y , 10, 0, Math.PI*2, true);
-			} else {
-				// Define the circle using an arc.
-				context.arc(x+bus2X , y+bus2Y , 10, 0, Math.PI*2, true);
-			}
-			context.arc.globalCompositeOperation = 'xor';//'source-out';
-			//context.lineWidth = 15;
-			context.fill();
-			
-	    }
+	    
 	    i++;
     }, 10); 
 	    	
@@ -445,14 +585,12 @@ $(document).ready(function() {
 	  	  }
 	  	  
 	  	  // 우리가 원하는 공간 범위 0<= X <= 100 && 0<= Y <=50 일때 캔퍼스에 좌표 표시
-	  	  if(checkPosition){//if(X >= 0 && X <=100 && Y >=0 && Y<=50){
+	  	  if(X >= 0 && X <=100 && Y >=0 && Y<=50){
 	  		//checkPosition = true;
 	  		showPoint(X,Y,bus);
-	  	  } else {
-	  		showPoint(X,Y,bus);
-	  	  }
+	  	  } 
 	  	  
-	  	  test = test + 1;
+	  	  
 	  	  
 	      console.log(html);
 	      $('#dictionary').html(html);
