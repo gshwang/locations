@@ -39,8 +39,7 @@
 		<div class="letter" id="target">
           <h3><a href="#">click</a></h3>
       	</div>
-     <!--  <div id="map-canvas" style="height:512px; width:100%; padding:0; margin:0"> -->
-      </div>
+     <!--  <div id="map-canvas" style="height:512px; width:100%; padding:0; margin:0"></div>  -->
  	  
  	  
       <footer>&copy; 2014 <a href="http://mobile-web-messaging.net">Mobile &amp; Web Messaging</a></footer>
@@ -50,9 +49,21 @@
       <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
       <script src="../js/stomp-2.3.3.js"></script>
       <script>
+
+// the STOMP client
+var client;
+// Check Message Sending
+var check = false;
+// On-board Time 
+var startTime = null;
+// Off-board Time
+var endTime = null;
+// check position - In or Out
+var checkPosition = false;
+
 $(document).ready(function() {
-  // the STOMP client
-  var client;
+  // start time
+  startTime = new Date();
   // Google map and the trackers to follow the devices
   var map, trackers = {};
   function initialize() {
@@ -195,22 +206,84 @@ bus1Image.src = "../images/bus_red.png";
 bus2Image.src = "../images/bus_green.png";
 stopImage.src ="../images/busline_blue.png";
 
-var stopX = 00; // current bus1 position X
-var stopY = 100; // current bus1 position Y
+var stopX = 00;   // current bus1 position X
+var stopY = 100;  // current bus1 position Y
 
 var bus1X = 1050; // current bus1 position X
-var bus1Y = 0; // current bus1 position Y
-var bus2X = 740; // current bus1 position X
-var bus2Y = 200; // current bus1 position Y
+var bus1Y = 0; 	  // current bus1 position Y
+var bus2X = 740;  // current bus1 position X
+var bus2Y = 200;  // current bus1 position Y
+
+var inoutFlag = false;
+var boardingTime = '';
+
+var test = 0;
 
 function showPoint(x, y, bus) {
+    
+	var bb = 0.1;
+	var i = 0;
+    
+    setInterval(function(){
+	    if( checkPosition ){
+	    	if(i != 0){
+			    var oldStartAngle = (0 + (bb*(i-1))) * Math.PI;
+			    var oldEndAngle = (0.1 + (bb*(i-1))) * Math.PI;
+			    context.beginPath();
+				if( bus == 'R' ){
+					// Define the circle using an arc.
+					context.arc(x+bus1X , y , 10, oldStartAngle, oldEndAngle, true);	
+				} else {
+					// Define the circle using an arc.
+					context.arc(x+bus2X , y+bus2Y , 10, oldStartAngle, oldEndAngle, true);
+				}
+			    context.lineWidth = 15;
+			
+			    // line color
+			    context.strokeStyle = 'white';
+			    context.stroke();
+	    	} 
+			    var startAngle = (0 + (bb*i)) * Math.PI;
+			    var endAngle = (0.1 + (bb*i)) * Math.PI;
+			    context.beginPath();
+				if( bus == 'R' ){
+					// Define the circle using an arc.
+					context.arc(x+bus1X , y , 10, startAngle, endAngle, true);	
+				} else {
+					// Define the circle using an arc.
+					context.arc(x+bus2X , y+bus2Y , 10, startAngle, endAngle, true);
+				}
+			    context.lineWidth = 15;
+			
+			    // line color
+			    context.strokeStyle = 'gold';
+			    context.stroke();
+	    } else {
+		    //context.beginPath();
+		    //'destination-out';
+			if( bus == 'R' ){
+				// Define the circle using an arc.
+				context.arc(x+bus1X , y , 10, 0, Math.PI*2, true);
+			} else {
+				// Define the circle using an arc.
+				context.arc(x+bus2X , y+bus2Y , 10, 0, Math.PI*2, true);
+			}
+			context.arc.globalCompositeOperation = 'xor';//'source-out';
+			//context.lineWidth = 15;
+			context.fill();
+			
+	    }
+	    i++;
+    }, 10); 
+	    	
+/* 	    	
+	    	
+	    }
 	// Start the path.
 	context.beginPath();
 
 	// Define the stroke color in RGB for blue.
-	context.strokeStyle = "rgb(0, 162, 232)";
-
-	alert("bus : " + bus);
+	context.strokeStyle = "black"; //"rgb(0, 162, 232)";
 	
 	if( bus == 'R' ){
 		// Define the circle using an arc.
@@ -221,8 +294,9 @@ function showPoint(x, y, bus) {
 	}
 
 	context.fill();
+	
 	// draw the circle.
-	context.stroke();
+	context.stroke(); */
 }
 
 
@@ -349,7 +423,7 @@ $(document).ready(function() {
 	    	  //alert(i+" pointArray : "+pointArray[i][0]+" ## "+pointArray[i][1]);
 	      } 
 	      
-	      alert(xSum/pointArray.length + "  :  "+ySum/pointArray.length);
+	      //alert("X : " + xSum/pointArray.length + " / Y : "+ySum/pointArray.length);
 	      
 	      //최종 좌표 X, Y
 	      var X = xSum/pointArray.length;
@@ -365,10 +439,20 @@ $(document).ready(function() {
 	  		  bus = 'G';
 	  	  }
 	  	  
+	  	checkPosition = true;
+	  	  if( test > 0 ){
+	  		checkPosition = false;  
+	  	  }
+	  	  
 	  	  // 우리가 원하는 공간 범위 0<= X <= 100 && 0<= Y <=50 일때 캔퍼스에 좌표 표시
-	  	  if(X >= 0 && X <=100 && Y >=0 && Y<=50){
+	  	  if(checkPosition){//if(X >= 0 && X <=100 && Y >=0 && Y<=50){
+	  		//checkPosition = true;
+	  		showPoint(X,Y,bus);
+	  	  } else {
 	  		showPoint(X,Y,bus);
 	  	  }
+	  	  
+	  	  test = test + 1;
 	  	  
 	      console.log(html);
 	      $('#dictionary').html(html);
