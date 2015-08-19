@@ -15,7 +15,7 @@
       <form id='connect_form'>
         <fieldset>
           <label>WebSocket URL</label>
-          <input name=url id='connect_url' value='ws://172.30.1.33:61614' type="text"size=20>
+          <input name=url id='connect_url' value='ws://jdev2dev.iptime.org:61614' type="text"size=20>
           <button id='connect_button' type="submit">Connect</button>
           <button type="button" id='disconnect_button' disabled>Disconnect</button>
         </fieldset>
@@ -24,7 +24,7 @@
         <fieldset>
           <legend>Send Text</legend>
           Device: <select id="deviceID">
-          			<option value="C7984C40-6269-4B63-AD67-CACA06B1C2BC">100</option>
+          			<option value="654835E0-348A-4FFE-8C4A-9D98A2FEE519">100</option>
           			<option value="101">101</option>
           			<option value="102">102</option>
           		  </select>
@@ -124,7 +124,7 @@ $(document).ready(function() {
       // once the client is connected, subscribe to the device's location destinations.
       // we use a wildcard destination to register to any
       // destination that matches this pattern.
-      var destination = "/topic/device.*.location";
+      var destination = "/topic/device.654835E0-348A-4FFE-8C4A-9D98A2FEE519.location";
       client.subscribe(destination, function(message) {
         // this function is called every time a message is received
         // create an object from the JSON string contained in the message body
@@ -148,10 +148,10 @@ var html = '';
 		  * 3차원 좌표지만 천장에 같은 높이에 모두 설치할 것이므로 z 값은 모두 0 이다. 따라서 x,y 좌표만 간단히 표시함	  
 		  */
 	      var A = new Array(0,0);		//A(0,0,0)
-	      var B = new Array(60,0);		//B(100,0,0)
-	      var C = new Array(30,40);		//C(40,50,0)
-	      var D = new Array(60,50);	//D(100,50,0) 
-	      var E = new Array(0,50);		//E(0,50,0)    
+	      var B = new Array(160,0);		//B(100,0,0)
+	      var C = new Array(80,60);		//C(40,50,0)
+	      var D = new Array(160,80);	//D(100,50,0) 
+	      var E = new Array(0,80);		//E(0,50,0)    
 	    
 	      
 		
@@ -178,15 +178,15 @@ var html = '';
 		  	  html += "rssi : " + data.beacons[i].rssi +"&nbsp;"+"</li>";
 		  	  
 			   if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='1' ){
-				  lengthMA = data.beacons[i].accur * 500.0;
+				  lengthMA = data.beacons[i].accur * 100.0;
 			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='2' ){
-				  lengthMB = data.beacons[i].accur * 1000.0;
+				  lengthMB = data.beacons[i].accur * 100.0;
 			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='3' ){
-				  lengthMC = data.beacons[i].accur * 1000.0;
+				  lengthMC = data.beacons[i].accur * 100.0;
 			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='4' ){
-				  lengthMD = data.beacons[i].accur * 500.0;
+				  lengthMD = data.beacons[i].accur * 100.0;
 			  }	else if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='5' ){
-				  lengthME = data.beacons[i].accur * 2000.0;
+				  lengthME = data.beacons[i].accur * 100.0;
 			  }	 	
 	  	  }
 	      
@@ -195,6 +195,8 @@ var html = '';
 	      var aaaLength = aaa.length;
 	      //alert(aaaLength);//경우의 수 : 5C3 = 10개
 	      var pointArray = new Array(aaaLength);
+	      var XArray = new Array(aaaLength);
+	      var YArray = new Array(aaaLength);
 	      
 	      
 	      for(var i=0; i<aaa.length;i++){
@@ -235,13 +237,37 @@ var html = '';
 	      	  //x,y,z의 값이 undefined 또는 Infinit 인 경우 제외하고 pointArray 에 x,y 좌표 저장(2차원에 표시하기 때문에 z 굳이 저장 안함)
 	      	  if( Math.pow(lengthM[0], 2) - Math.pow((x-m[0][0]), 2) - Math.pow((y-m[0][1]), 2) >= 0 && !isNaN(y) && !isNaN(x)   ){
 	      			pointArray[i] = [x, y];
+	      			XArray[i] = x;
+	      			yArray[i] = y;
 	      	  } 
 	      }
 	      
 	      // pointArray 에서 undefined 또는 null 등 없는 만큼 잘라냄
 	      pointArray =pointArray.filter(function(x){return x!=undefined && x!=null;});
+	      XArray =XArray.filter(function(x){return x!=undefined && x!=null;});
+	      yArray =yArray.filter(function(x){return x!=undefined && x!=null;});
 	      //alert("pointArray.length : "+pointArray.length);
+	      console.log(pointArray);
 	      
+	      XArray.sort(function(left,right){ 
+	            return right - left; 
+	        }); 
+	      yArray.sort(function(left,right){ 
+	            return right - left; 
+	        }); 
+	        //console.log('내림차순>>>>>'+XArray.join()); 
+	      
+	      //배열의 중간 값 을 최종 좌표로 설정
+	      if(XArray.length >=3){
+	    	 X =  XArray[XArray.length/2];
+	      }else {
+	    	 X =  XArray[0];
+	      }   
+	      if(yArray.length >=3){
+	    	 Y =  yArray[yArray.length/2];
+	      }else {
+	    	 Y =  yArray[0];
+	      }   
 	      //계산한 공간 좌표들의 산술평균을 구함
 	      var xSum = 0;
 	      var ySum = 0;
@@ -254,14 +280,14 @@ var html = '';
 	      //alert("X : " + x + " / Y : "+y);
 	      
 	      //최종 좌표 X, Y
-	      var X = xSum/pointArray.length;
-	      var Y = ySum/pointArray.length;
+	     // var X = xSum/pointArray.length;
+	     // var Y = ySum/pointArray.length;
 	     
 	  	  // alert(X+" : "+Y);
 	  	  
 	  	  var bus = '';
 	  	  
-	  	  if( data.deviceID == 'C7984C40-6269-4B63-AD67-CACA06B1C2BC' ){
+	  	  if( data.deviceID == '654835E0-348A-4FFE-8C4A-9D98A2FEE519' ){
 	  		  bus = 'R';
 	  	  } else {
 	  		  bus = 'G';
