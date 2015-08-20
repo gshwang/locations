@@ -238,21 +238,21 @@ var html = '';
 	      	  if( Math.pow(lengthM[0], 2) - Math.pow((x-m[0][0]), 2) - Math.pow((y-m[0][1]), 2) >= 0 && !isNaN(y) && !isNaN(x)   ){
 	      			pointArray[i] = [x, y];
 	      			XArray[i] = x;
-	      			yArray[i] = y;
+	      			YArray[i] = y;
 	      	  } 
 	      }
 	      
 	      // pointArray 에서 undefined 또는 null 등 없는 만큼 잘라냄
 	      pointArray =pointArray.filter(function(x){return x!=undefined && x!=null;});
 	      XArray =XArray.filter(function(x){return x!=undefined && x!=null;});
-	      yArray =yArray.filter(function(x){return x!=undefined && x!=null;});
+	      YArray =YArray.filter(function(x){return x!=undefined && x!=null;});
 	      //alert("pointArray.length : "+pointArray.length);
 	      console.log(pointArray);
 	      
 	      XArray.sort(function(left,right){ 
 	            return right - left; 
 	        }); 
-	      yArray.sort(function(left,right){ 
+	      YArray.sort(function(left,right){ 
 	            return right - left; 
 	        }); 
 	        //console.log('내림차순>>>>>'+XArray.join()); 
@@ -263,10 +263,10 @@ var html = '';
 	      }else {
 	    	 X =  XArray[0];
 	      }   
-	      if(yArray.length >=3){
-	    	 Y =  yArray[yArray.length/2];
+	      if(YArray.length >=3){
+	    	 Y =  YArray[YArray.length/2];
 	      }else {
-	    	 Y =  yArray[0];
+	    	 Y =  YArray[0];
 	      }   
 	      //계산한 공간 좌표들의 산술평균을 구함
 	      var xSum = 0;
