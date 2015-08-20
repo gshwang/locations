@@ -106,6 +106,8 @@ $(document).ready(function() {
       });
     }
   }
+  
+  //var inOutflag = new Array(3);	
   // Connection to the STOMP broker
   // and subscription to the device's position destinations.
   //
@@ -129,9 +131,8 @@ $(document).ready(function() {
         // this function is called every time a message is received
         // create an object from the JSON string contained in the message body
         //////////////
-var html = '';
-//console.log("hoontaky");
-        //console.log(message);
+		//var Ynflag = false;
+		
 		  var data = JSON.parse(message.body);
 	      /*
 	      * 스마트폰 M , 비콘 A,B,C,D,E 일때
@@ -172,10 +173,7 @@ var html = '';
 	      
 	      //비콘에서 입력받은 정보 비콘과 스마트폰과의 거리 정보 저장
 	      for(var i=0; i< data.beacons.length;i++){	  
-		  	  html += "<li>uuid : " + data.beacons[i].uuid +"&nbsp;";
-		  	  html += "major : " + data.beacons[i].major +"&nbsp;";
-		  	  html += "minor : " + data.beacons[i].minor +"&nbsp;";
-		  	  html += "rssi : " + data.beacons[i].rssi +"&nbsp;"+"</li>";
+		  
 		  	  
 			   if(data.beacons[i].uuid =='xxxxxxxx' && data.beacons[i].minor =='1' ){
 				  lengthMA = data.beacons[i].accur * 100.0;
@@ -302,10 +300,18 @@ var html = '';
 	  		showPoint(x,y,bus);
 	  	  //}
 	  	  
-	  	  
-	  	  
-	      
-        
+	  		/* if(X >= 0 && X <=160 && Y >=0 && Y<=80){
+	  			Ynflag = true;
+	  		}else {
+	  			Ynflag = false;
+	  		} */
+	  		
+	  		/* for(var i=0; i<inOutflag.length;i++){
+	  			if(Outflag[i]!=null && !isNaN(Outflag[i])){
+	  				Outflag[i]=Ynflag;
+	  			}
+	  		}
+         */
         
         //////////////////
         //var payload = JSON.parse(message.body);
