@@ -15,7 +15,7 @@
       <form id='connect_form'>
         <fieldset>
           <label>WebSocket URL</label>
-          <input name=url id='connect_url' value='ws://jdev2dev.iptime.org:61614' type="text"size=20>
+          <input name=url id='connect_url' value='ws://192.168.0.9:61614' type="text"size=20>
           <button id='connect_button' type="submit">Connect</button>
           <button type="button" id='disconnect_button' disabled>Disconnect</button>
         </fieldset>
@@ -76,6 +76,7 @@ $(document).ready(function() {
   }
   // initialize the Google map.
   google.maps.event.addDomListener(window, 'load', initialize);
+  
   // show the device at the given latitude and longitude
   function show(deviceID, lat, lng) {
 	console.log("deviceId:lat:lng="+deviceID+":"+lat+":"+lng);
@@ -285,7 +286,7 @@ $(document).ready(function() {
 	  	  
 	  	  var bus = '';
 	  	  
-	  	  if( data.deviceID == '654835E0-348A-4FFE-8C4A-9D98A2FEE519' ){
+	  	  if( data.deviceID == 'C7984C40-6269-4B63-AD67-CACA06B1C2BC' ){
 	  		  bus = 'R';
 	  	  } else {
 	  		  bus = 'G';
