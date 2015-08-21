@@ -429,11 +429,27 @@ var i = 0;
 var SA;
 var EA;
 
+var takeCnt = 0;
+var getOffCnt = 0;
+var sndMsg = true;
+
 function showPoint(x, y, bus, checkPosition) {
 	
 	var bb = 0.1;
-	
+		
 	    if( checkPosition ){
+	    	getOffCnt = 0;
+	    	if( takeCnt == 1 && sndMsg == true ){
+			    // Start Send Message
+			    var deviceID = $("#deviceID").val();
+			    var text = "You take bus at A-Stop.";
+			    // sue the device's queue orders as the destination
+			    var destination = "/queue/device." + deviceID + ".text";
+			    // text is sent as a plain text string
+			    client.send(destination, {}, text);
+			    sndMsg = false;
+	    	}
+	    	
 	    	if(i != 0){
 			    var oldStartAngle = (0 + (bb*(i-1))) * Math.PI;
 			    var oldEndAngle = (0.1 + (bb*(i-1))) * Math.PI;
@@ -474,6 +490,7 @@ function showPoint(x, y, bus, checkPosition) {
 			    context.strokeStyle = 'gold';
 			    context.stroke();
 			    i++;
+			    takeCnt++;
 	    } else {
 	    	
 	    	context.clearRect(1080, 10, 40, 40);
@@ -486,6 +503,19 @@ function showPoint(x, y, bus, checkPosition) {
 	    		context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
 	    	}
 	    	i = 0;
+	    	
+	    	if( getOffCnt == 5 ){
+			    // Start Send Message
+			    var deviceID = $("#deviceID").val();
+			    var text = "You get off bus at B-Stop./n The fare is 2 dollars.";
+			    // sue the device's queue orders as the destination
+			    var destination = "/queue/device." + deviceID + ".text";
+			    // text is sent as a plain text string
+			    client.send(destination, {}, text);
+			    takeCnt = 0;
+			    sndMsg = true;
+	    	}
+	    	getOffCnt++;
 	    }
 	
 }
