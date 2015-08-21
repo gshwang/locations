@@ -37,9 +37,9 @@
       </form>
       <hr>
 <canvas id="canvas" width="1500" height="600"  >Canvas</canvas>
-		<div class="letter" id="target">
+<!-- 		<div class="letter" id="target">
           <h3><a href="#" onclick="aa();">click</a></h3>
-      	</div>
+      	</div> -->
      <!--  <div id="map-canvas" style="height:512px; width:100%; padding:0; margin:0"></div>  -->
  	  
  	  
@@ -410,8 +410,8 @@ gifImage.src = "../images/smile.gif";
 var stopX = 00;   // current bus1 position X
 var stopY = 100;  // current bus1 position Y
 
-var bus1X = 1050; // current bus1 position X
-var bus1Y = 0; 	  // current bus1 position Y
+var bus1X = 1000; // current bus1 position X
+var bus1Y = 100; 	  // current bus1 position Y
 var bus2X = 740;  // current bus1 position X
 var bus2Y = 200;  // current bus1 position Y
 
@@ -458,7 +458,7 @@ function showPoint(x, y, bus, checkPosition) {
 					// Define the circle using an arc.
 					//context.arc(1100 , 30 , 10, oldStartAngle, oldEndAngle, true);
 					//context.arc(startX , 30 , 10, oldStartAngle, oldEndAngle, true);
-					context.drawImage(gifImage, startX, 5, gifImage.width/5, gifImage.height/5);
+					context.drawImage(gifImage, startX, 105, gifImage.width/3, gifImage.height/3);
 				} else {
 					// Define the circle using an arc.
 					context.arc(25 , 200 , 10, oldStartAngle, oldEndAngle, true);
@@ -477,7 +477,7 @@ function showPoint(x, y, bus, checkPosition) {
 					//context.arc(x+bus1X , y , 10, startAngle, endAngle, true);
 					//context.arc(1100 , 30 , 10, startAngle, endAngle, true);
 					//context.arc(startX , 30 , 10, startAngle, endAngle, true);
-					context.drawImage(gifImage, startX, 5, gifImage.width/5, gifImage.height/5);
+					context.drawImage(gifImage, startX, 105, gifImage.width/3, gifImage.height/3);
 				} else {
 					// Define the circle using an arc.
 					context.arc(x+bus2X , y+bus2Y , 10, startAngle, endAngle, true);
@@ -498,18 +498,18 @@ function showPoint(x, y, bus, checkPosition) {
 	    	context.clearRect(1080, 10, 40, 40);
 	    	
 	    	if( bus == 'R' ){
-	    		context.clearRect(bus1X, bus1Y, bus1Image.width*2 ,bus1Image.height*2);
-	    		context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+	    		context.clearRect(bus1X, bus1Y, bus1Image.width*4 ,bus1Image.height*4);
+	    		context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*4, bus1Image.height*4);
 	    	} else {
 	    		context.clearRect(bus2X, bus2Y, bus2Image.width*2 ,bus2Image.height*2);
 	    		context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
 	    	}
 	    	i = 0;
 	    	
-	    	if( getOffCnt == 5 ){
+	    	if( getOffCnt == 3 ){
 			    // Start Send Message
 			    var deviceID = $("#deviceID").val();
-			    var text = "You get off bus at B-Stop./n The fare is 2 dollars.";
+			    var text = "You get off bus at B-Stop. The fare is 1 Euro.";
 			    // sue the device's queue orders as the destination
 			    var destination = "/queue/device." + deviceID + ".text";
 			    // text is sent as a plain text string
@@ -598,9 +598,8 @@ function canvasBusStop(){
 	 
 function stopDraw()
 {
-	context.drawImage(stopImage, stopX, stopY, stopImage.width*2, stopImage.height*2);
-	context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
-	context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
+	context.drawImage(stopImage, stopX, stopY+300, stopImage.width*2, stopImage.height*3);
+	context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*4, bus1Image.height*4);
 }
 
 function whatKey(evt) {
@@ -609,25 +608,20 @@ function whatKey(evt) {
       // Left arrow.
 		case 37:
    			  setInterval(function(){
-   				  if(bus1X > 740){
+   				  if(bus1X > 650){
    					context.clearRect(startX, endY, 40, 40);
-   					context.clearRect(bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
-	   			    bus1X = bus1X - 5;
-	   			    context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+   					context.clearRect(bus1X, bus1Y, bus1Image.width*4, bus1Image.height*4);
+	   			    bus1X = bus1X - 10;
+	   			    context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*4, bus1Image.height*4);
 	   			    
-					context.beginPath();
-					startX = startX - 5;
-	   				/* context.arc(1100, 30 , 10, startAngle, endAngle, true); */
-	   				//context.arc(startX, 30 , 10, SA, EA, true);
-	   				context.drawImage(gifImage, startX, 5, gifImage.width/5, gifImage.height/5);
-				    context.lineWidth = 15;
-				    // line color
-				    context.strokeStyle = 'gold';
-				    context.stroke();
+	   			    if( takeCnt > 0 ){
+						startX = startX - 10;
+		   				context.drawImage(gifImage, startX, 105, gifImage.width/3, gifImage.height/3);	
+	   			    }
    				  }
    			  }, 50);  
 	   	break;
-		case 38:
+/* 		case 38:
    			  setInterval(function(){
    				  if(bus2X > 400){
    					context.clearRect(bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
@@ -635,7 +629,7 @@ function whatKey(evt) {
 	   			    context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
    				  }
    			  }, 50);  
-	   	break;
+	   	break; */
    }
 }
 
