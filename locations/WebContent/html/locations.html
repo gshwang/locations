@@ -24,7 +24,7 @@
         <fieldset>
           <legend>Send Text</legend>
           Device: <select id="deviceID">
-          			<option value="654835E0-348A-4FFE-8C4A-9D98A2FEE519">100</option>
+          			<option value="C7984C40-6269-4B63-AD67-CACA06B1C2BC">100</option>
           			<option value="101">101</option>
           			<option value="102">102</option>
           		  </select>
@@ -127,7 +127,7 @@ $(document).ready(function() {
       // once the client is connected, subscribe to the device's location destinations.
       // we use a wildcard destination to register to any
       // destination that matches this pattern.
-      var destination = "/topic/device.654835E0-348A-4FFE-8C4A-9D98A2FEE519.location";
+      var destination = "/topic/device.C7984C40-6269-4B63-AD67-CACA06B1C2BC.location";
       client.subscribe(destination, function(message) {
         // this function is called every time a message is received
         // create an object from the JSON string contained in the message body
