@@ -11,7 +11,9 @@
     </style>
   </head>
   <body onload="canvasBusStop()">
-    <h1>Locations - STOMP Example</h1>
+  <div class='header'>
+    <h1>Beacon을 이용한 버스 승·하차 요금징수 시스템</h1>
+    </div>
       <form id='connect_form'>
         <fieldset>
           <label>WebSocket URL</label>
@@ -23,19 +25,19 @@
       <form id="text_form" style="display: none;">
         <fieldset>
           <legend>Send Text</legend>
-          Device: <select id="deviceID">
+          <label>Bus No : </label>
+          <select id="deviceID">
           			<!-- <option value="C7984C40-6269-4B63-AD67-CACA06B1C2BC">100</option> -->
           			<option value="654835E0-348A-4FFE-8C4A-9D98A2FEE519">100</option>
           			<option value="101">101</option>
           			<option value="102">102</option>
           		  </select>
-          <br>
-          Text: <input id='text' size=64 placeholder="type the text to sent to the device" type="text">
-          <br>
+          <label> Message : </label><input id='text' size=64 placeholder="type the text to sent to the device" type="text">
           <button id='text_submit' type="submit">Send</button>
         </fieldset>
       </form>
       <hr>
+      
 <canvas id="canvas" width="1500" height="600"  >Canvas</canvas>
 <!-- 		<div class="letter" id="target">
           <h3><a href="#" onclick="aa();">click</a></h3>
@@ -43,7 +45,7 @@
      <!--  <div id="map-canvas" style="height:512px; width:100%; padding:0; margin:0"></div>  -->
  	  
  	  
-      <footer>&copy; 2014 <a href="http://mobile-web-messaging.net">Mobile &amp; Web Messaging</a></footer>
+      <footer align='center'>&copy; 2015 LGCNS Hackerton Notag Team</footer>
 		
       <!-- Scripts placed at the end of the document so the pages load faster -->
       <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -75,39 +77,8 @@ $(document).ready(function() {
     };
     map = new google.maps.Map($("#map-canvas").get(0), mapOptions);
   }
-  // initialize the Google map.
-  google.maps.event.addDomListener(window, 'load', initialize);
   
   // show the device at the given latitude and longitude
-  function show(deviceID, lat, lng) {
-	console.log("deviceId:lat:lng="+deviceID+":"+lat+":"+lng);
-    var position = new google.maps.LatLng(lat, lng);
-    // lazy instantiation of the map
-    if (!map) {
-      create_map(position);
-    }
-    if (trackers[deviceID]) {
-      // the tracker is known, we just need to update its position
-      trackers[deviceID].marker.setPosition(position);
-    } else {
-      // there is no tracker for this device yet, let's create it
-      var marker = new google.maps.Marker({
-        position: position,
-        map: map,
-        title: deviceID + " is here"});
-      var infowindow = new google.maps.InfoWindow({
-        content: "Device " + deviceID
-      });
-      var tracker = {
-        marker: marker
-      };
-      // add it to the trackers
-      trackers[deviceID] = tracker;
-      google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
-      });
-    }
-  }
   
   //var inOutflag = new Array(3);	
   // Connection to the STOMP broker
@@ -198,8 +169,8 @@ $(document).ready(function() {
 	      var XArray = new Array(aaaLength);
 	      var YArray = new Array(aaaLength);
 	      
-	      var XLocArray = new Array(2);
-	      var YLocArray = new Array(2);
+	      var XLocArray = new Array(10000);
+	      var YLocArray = new Array(10000);
 	      
 	      for(var i=0; i<aaa.length;i++){
 	    	  //alert(aaa[i]); 
@@ -277,13 +248,9 @@ $(document).ready(function() {
 	      var X = xSum/pointArray.length;
 	      var Y = ySum/pointArray.length;
 	  	  
-	      if(totalCount % 2 == 0){
-	    	  XLocArray[1]=X;
-	    	  YLocArray[1]=Y;
-	      }else{
-	    	  XLocArray[0]=X;
-	    	  YLocArray[0]=Y;
-	      }
+    	  XLocArray[totalCount]=X;
+    	  YLocArray[totalCount]=Y;
+    	  
 	  	  
 	  	  var bus = '';
 	  	  
@@ -294,35 +261,38 @@ $(document).ready(function() {
 	  		  bus = 'G';
 	  	  }
 
+
 	  	  if( totalCount > 1 && flagParam){
 	  		  //1. 1번, 2번 결과를 토대로 승차 하차를 구분한다.
 	  		  //2. 1번 결과값과 2번 결과값의 차이가 10을 넘어가면 Max 10으로 설정하고, 나머지는 차이값만큼 변경하도록 한다.
 	  		  //3. 측정값과 Max(10)을 더한 값이 일정 바운더리를 벗어나면 하차로 인지한다.
-	  		  
-		      if(totalCount % 2 == 0){
-		    	  var XGap = XLocArray[1] - XLocArray[0];
-				  var YGap = YLocArray[1] - YLocArray[0];
-		      }else{
-		    	  var XGap = XLocArray[0] - XLocArray[1];
-				  var YGap = YLocArray[0] - YLocArray[1];
-		      }
-	  		  
-			  if(XGap > 10){
-			      if(totalCount % 2 == 0){
-			    	  X=XLocArray[0]+10;
-			      }else{
-			    	  X=XLocArray[1]+10;
-			      }
+			  if(XLocArray[totalCount] > XLocArray[totalCount-1]){
+				  var XGap = XLocArray[totalCount] - XLocArray[totalCount-1];
+				  if(XGap > 10 ){
+					  X=XLocArray[totalCount-1]+10;
+				  } 
+			  }else{
+				  var XGap = XLocArray[totalCount-1] - XLocArray[totalCount];
+				  if(XGap > 10 ){
+					  X=XLocArray[totalCount-1]-10;
+				  } 
 			  }
-			  if(YGap > 10){
-			      if(totalCount % 2 == 0){
-			    	  Y=YLocArray[0]+10;
-			      }else{
-			    	  Y=YLocArray[1]+10;
-			      }
+	  		  
+			  if(YLocArray[totalCount] > YLocArray[totalCount-1]){
+				  var YGap = YLocArray[totalCount] - XLocArray[totalCount-1];
+				  if(YGap > 10 ){
+					  Y=YLocArray[totalCount-1]+10;
+				  } 
+			  }else{
+				  var YGap = YLocArray[totalCount-1] - YLocArray[totalCount];
+				  if(YGap > 10 ){
+					  Y=YLocArray[totalCount-1]-10;
+				  } 
 			  }
+	  		  
+			  
+	  		  
 	  	  }
-	  	  
 	  	  // 우리가 원하는 공간 범위 0<= X <= 100 && 0<= Y <=50 일때 캔퍼스에 좌표 표시
 	  	  if(X >= 0 && X <=100 && Y >=0 && Y<=100){
 	  		var flagParam = true;
