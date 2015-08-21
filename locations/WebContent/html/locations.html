@@ -402,6 +402,9 @@ var takeCnt = 0;
 var getOffCnt = 0;
 var sndMsg = true;
 
+var trueCnt = 0;
+var falseCnt = 0;
+
 function showPoint(x, y, bus, checkPosition) {
 	
 	var bb = 0.1;
@@ -465,30 +468,32 @@ function showPoint(x, y, bus, checkPosition) {
 			    i++;
 			    takeCnt++;
 	    } else {
-	    	
-	    	context.clearRect(1080, 10, 40, 40);
-	    	
-	    	if( bus == 'R' ){
-	    		context.clearRect(bus1X, bus1Y, bus1Image.width*4 ,bus1Image.height*4);
-	    		context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*4, bus1Image.height*4);
-	    	} else {
-	    		context.clearRect(bus2X, bus2Y, bus2Image.width*2 ,bus2Image.height*2);
-	    		context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
-	    	}
-	    	i = 0;
-	    	
-	    	if( getOffCnt == 3 ){
-			    // Start Send Message
-			    var deviceID = $("#deviceID").val();
-			    var text = "You get off bus at B-Stop. The fare is 1 Euro.";
-			    // sue the device's queue orders as the destination
-			    var destination = "/queue/device." + deviceID + ".text";
-			    // text is sent as a plain text string
-			    client.send(destination, {}, text);
-			    takeCnt = 0;
-			    sndMsg = true;
-	    	}
-	    	getOffCnt++;
+	    	if( falseCnt > 2 ){
+		    	context.clearRect(1080, 10, 40, 40);
+		    	
+		    	if( bus == 'R' ){
+		    		context.clearRect(bus1X, bus1Y, bus1Image.width*4 ,bus1Image.height*4);
+		    		context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*4, bus1Image.height*4);
+		    	} else {
+		    		context.clearRect(bus2X, bus2Y, bus2Image.width*2 ,bus2Image.height*2);
+		    		context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
+		    	}
+		    	i = 0;
+		    	
+		    	if( takeCnt > 0 && getOffCnt == 3 ){
+				    // Start Send Message
+				    var deviceID = $("#deviceID").val();
+				    var text = "You get off bus at B-Stop. The fare is 1 Euro.";
+				    // sue the device's queue orders as the destination
+				    var destination = "/queue/device." + deviceID + ".text";
+				    // text is sent as a plain text string
+				    client.send(destination, {}, text);
+				    takeCnt = 0;
+				    sndMsg = true;
+		    	}
+		    	getOffCnt++;
+		    }
+	    	falseCnt++;
 	    }
 	
 }
