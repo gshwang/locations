@@ -38,7 +38,7 @@
       <hr>
 <canvas id="canvas" width="1500" height="600"  >Canvas</canvas>
 		<div class="letter" id="target">
-          <h3><a href="#">click</a></h3>
+          <h3><a href="#" onclick="aa();">click</a></h3>
       	</div>
      <!--  <div id="map-canvas" style="height:512px; width:100%; padding:0; margin:0"></div>  -->
  	  
@@ -59,6 +59,9 @@ var check = false;
 var startTime = null;
 // Off-board Time
 var endTime = null;
+
+var startX = 1100;
+var endY = 30;
 
 $(document).ready(function() {
   // start time
@@ -133,11 +136,9 @@ $(document).ready(function() {
         // create an object from the JSON string contained in the message body
         
 		  var data = JSON.parse(message.body);		  
-<<<<<<< HEAD
-		  totalCount++;  
-=======
 		  
->>>>>>> branch 'master' of https://github.com/gshwang/locations
+		  totalCount++;  
+		  
 	      /*
 	      * 스마트폰 M , 비콘 A,B,C,D,E 일때
 	      * 스마트폰과 비콘 간의 거리  lengthMA,lengthMB,lengthMC,lengthMD,lengthME	  
@@ -197,8 +198,6 @@ $(document).ready(function() {
 	      var pointArray = new Array(aaaLength);
 	      var XArray = new Array(aaaLength);
 	      var YArray = new Array(aaaLength);
-	      
-	      var flagParam = false;
 	      
 	      var XLocArray = new Array(2);
 	      var YLocArray = new Array(2);
@@ -278,18 +277,14 @@ $(document).ready(function() {
 	      //최종 좌표 X, Y
 	      var X = xSum/pointArray.length;
 	      var Y = ySum/pointArray.length;
-<<<<<<< HEAD
-	      
+	  	  
 	      if(totalCount % 2 == 0){
 	    	  XLocArray[1]=X;
 	    	  YLocArray[1]=Y;
 	      }else{
 	    	  XLocArray[0]=X;
 	    	  YLocArray[0]=Y;
-
 	      }
-=======
->>>>>>> branch 'master' of https://github.com/gshwang/locations
 	  	  
 	  	  var bus = '';
 	  	  
@@ -299,7 +294,7 @@ $(document).ready(function() {
 	  	  } else {
 	  		  bus = 'G';
 	  	  }
-	  	  
+
 	  	  if( totalCount > 1 && flagParam){
 	  		  //1. 1번, 2번 결과를 토대로 승차 하차를 구분한다.
 	  		  //2. 1번 결과값과 2번 결과값의 차이가 10을 넘어가면 Max 10으로 설정하고, 나머지는 차이값만큼 변경하도록 한다.
@@ -328,18 +323,8 @@ $(document).ready(function() {
 			      }
 			  }
 	  	  }
-
 	  	  
 	  	  // 우리가 원하는 공간 범위 0<= X <= 100 && 0<= Y <=50 일때 캔퍼스에 좌표 표시
-<<<<<<< HEAD
-	  	  if(X >= 0 && X <=100 && Y >=0 && Y<=100){//승차
-	  		var flagParam = true;
-	  		console.log(flagParam);
-	  		console.log(X);
-	  		console.log(Y);
-	  		showPoint(X,Y,bus, flagParam);
-	  	  } else {//하차
-=======
 	  	  if(X >= 0 && X <=100 && Y >=0 && Y<=100){
 	  		var flagParam = true;
 	  		console.log(flagParam);
@@ -347,7 +332,6 @@ $(document).ready(function() {
 	  		console.log(Y);
 	  		showPoint(X,Y,bus, flagParam);
 	  	  } else {
->>>>>>> branch 'master' of https://github.com/gshwang/locations
 	  		var flagParam = false;
 	  		console.log(flagParam);
 	  		console.log(X);
@@ -416,10 +400,12 @@ var context = canvas.getContext("2d");
 var bus1Image = new Image();
 var bus2Image = new Image();
 var stopImage = new Image();
+var bulbImage = new Image();
 
 bus1Image.src = "../images/bus_red.png";
 bus2Image.src = "../images/bus_green.png";
 stopImage.src ="../images/busline_blue.png";
+bulbImage.src = "../images/pic_bulbon.gif";
 
 var stopX = 00;   // current bus1 position X
 var stopY = 100;  // current bus1 position Y
@@ -433,34 +419,20 @@ var inoutFlag = false;
 var boardingTime = '';
 
 var test = 0;
-var xArray = new Array("");
-var yArray = new Array("");
 
-<<<<<<< HEAD
 var totalCount = 0;
 var XLocArr = new Array("");
 var YLocArr = new Array("");
 
 var i = 0;
 
-function redrawBus(){
-	context.clearRect(bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
-	context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
-}
+var SA;
+var EA;
 
 function showPoint(x, y, bus, checkPosition) {
-=======
-var i = 0;
-
-function showPoint(x, y, bus, checkPosition) {
-    
->>>>>>> branch 'master' of https://github.com/gshwang/locations
+	
 	var bb = 0.1;
 	
-	xArray.push(x);
-	yArray.push(y);
-	
-    setInterval(function(){
 	    if( checkPosition ){
 	    	if(i != 0){
 			    var oldStartAngle = (0 + (bb*(i-1))) * Math.PI;
@@ -468,10 +440,11 @@ function showPoint(x, y, bus, checkPosition) {
 			    context.beginPath();
 				if( bus == 'R' ){
 					// Define the circle using an arc.
-					context.arc(x+bus1X , y , 10, oldStartAngle, oldEndAngle, true);	
+					//context.arc(1100 , 30 , 10, oldStartAngle, oldEndAngle, true);
+					context.arc(startX , 30 , 10, oldStartAngle, oldEndAngle, true);
 				} else {
 					// Define the circle using an arc.
-					context.arc(x+bus2X , y+bus2Y , 10, oldStartAngle, oldEndAngle, true);
+					context.arc(25 , 200 , 10, oldStartAngle, oldEndAngle, true);
 				}
 			    context.lineWidth = 15;
 			
@@ -484,11 +457,17 @@ function showPoint(x, y, bus, checkPosition) {
 			    context.beginPath();
 				if( bus == 'R' ){
 					// Define the circle using an arc.
-					context.arc(x+bus1X , y , 10, startAngle, endAngle, true);
+					//context.arc(x+bus1X , y , 10, startAngle, endAngle, true);
+					//context.arc(1100 , 30 , 10, startAngle, endAngle, true);
+					context.arc(startX , 30 , 10, startAngle, endAngle, true);
 				} else {
 					// Define the circle using an arc.
 					context.arc(x+bus2X , y+bus2Y , 10, startAngle, endAngle, true);
 				}
+				
+				SA = startAngle;
+				EA = endAngle;
+				
 			    context.lineWidth = 15;
 			
 			    // line color
@@ -496,26 +475,9 @@ function showPoint(x, y, bus, checkPosition) {
 			    context.stroke();
 			    i++;
 	    } else {
-<<<<<<< HEAD
-	    	for( var j=1; j<=i; j++ ){
-	    		context.clearRect(xArray[j], yArray[j], 20, 20);
-	    	}
-	    	xArray.splice(i, 1);
-	    	xArray.splice(i, 1);
-=======
->>>>>>> branch 'master' of https://github.com/gshwang/locations
 	    	
-<<<<<<< HEAD
-=======
-	    	console.log('i : ' + i);
-	    	for( var j=1; j<=i; j++ ){
-	    		context.clearRect(xArray[j], yArray[j], 20, 20);
-	    	}
-	    	xArray.splice(i, 1);
-	    	xArray.splice(i, 1);
+	    	context.clearRect(1080, 10, 40, 40);
 	    	
->>>>>>> branch 'master' of https://github.com/gshwang/locations
-	    	/*
 	    	if( bus == 'R' ){
 	    		context.clearRect(bus1X, bus1Y, bus1Image.width*2 ,bus1Image.height*2);
 	    		context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
@@ -523,12 +485,9 @@ function showPoint(x, y, bus, checkPosition) {
 	    		context.clearRect(bus2X, bus2Y, bus2Image.width*2 ,bus2Image.height*2);
 	    		context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
 	    	}
-	    	*/
 	    	i = 0;
 	    }
-	    
-    }, 10); 
-
+	
 }
 
 function k_combinations(set, k) {
@@ -601,68 +560,54 @@ function canvasBusStop(){
 	if (canvas.getContext){
 		context = canvas.getContext("2d");	
 	}
-	stopDraw(true);
+	stopDraw();
 	window.addEventListener('keydown', whatKey, true);
 }
 	 
-function stopDraw(checkDraw)
+function stopDraw()
 {
-	var bb = 0.1;
-	
-	context.clearRect(0, 0, context.width, context.height);
-	
 	context.drawImage(stopImage, stopX, stopY, stopImage.width*2, stopImage.height*2);
 	context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
 	context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
-	
-   
-    console.log(checkDraw);
-    if(checkDraw){
-    	console.log("IN");
-    	 var oldStartAngle = (0 + (bb*(i-1))) * Math.PI;
-    	 var oldEndAngle = (0.1 + (bb*(i-1))) * Math.PI;
-    	 
-    	context.beginPath();
-		context.arc(bus1X+80,bus1Y+40, 10, oldStartAngle, oldEndAngle, true);
-	    context.lineWidth = 15;
-		
-	    // line color
-	    if(checkDraw){
-	    	context.strokeStyle = 'gold';
-	    }else{
-	    	context.strokeStyle = 'blue';
-	    }
-	    
-	    context.stroke();
-    }
-	//showPoint(bus1X,bus1Y, "R", true);	
 }
 
 function whatKey(evt) {
+	
 	switch (evt.keyCode) {
       // Left arrow.
 		case 37:
    			  setInterval(function(){
    				  if(bus1X > 740){
+   					context.clearRect(startX, endY, 40, 40);
    					context.clearRect(bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
 	   			    bus1X = bus1X - 5;
 	   			    context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+	   			    
+					context.beginPath();
+					startX = startX - 5;
+	   				/* context.arc(1100, 30 , 10, startAngle, endAngle, true); */
+	   				context.arc(startX, 30 , 10, SA, EA, true);
+				    context.lineWidth = 15;
+				    // line color
+				    context.strokeStyle = 'gold';
+				    context.stroke();
    				  }
    			  }, 50);  
 	   	break;
 		case 38:
-   			  //setInterval(function(){
-   			  //  if(bus2X > 400){
-   			  //	context.clearRect(bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
-	   			//    bus2X = bus2X - 5;
-	   			//    context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
-   				//  }
-   			  //}, 50);  
-			//stopDraw(false);
-			    context.clearRect(bus1X+80 - 20 - 1, bus1Y+40 - 20 - 1, 20 * 2 + 2, 20 * 2 + 2);
-			    //stopDraw(false);
+   			  setInterval(function(){
+   				  if(bus2X > 400){
+   					context.clearRect(bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
+	   			    bus2X = bus2X - 5;
+	   			    context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
+   				  }
+   			  }, 50);  
 	   	break;
    }
+}
+
+function aa(){
+	showPoint(10, 10, 'R', true);
 }
     </script>
   </body>
