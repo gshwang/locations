@@ -38,7 +38,7 @@
       <hr>
 <canvas id="canvas" width="1500" height="600"  >Canvas</canvas>
 		<div class="letter" id="target">
-          <h3><a href="#">click</a></h3>
+          <h3><a href="#" onclick="aa();">click</a></h3>
       	</div>
      <!--  <div id="map-canvas" style="height:512px; width:100%; padding:0; margin:0"></div>  -->
  	  
@@ -357,10 +357,12 @@ var context = canvas.getContext("2d");
 var bus1Image = new Image();
 var bus2Image = new Image();
 var stopImage = new Image();
+var bulbImage = new Image();
 
 bus1Image.src = "../images/bus_red.png";
 bus2Image.src = "../images/bus_green.png";
 stopImage.src ="../images/busline_blue.png";
+bulbImage.src = "../images/pic_bulbon.gif";
 
 var stopX = 00;   // current bus1 position X
 var stopY = 100;  // current bus1 position Y
@@ -374,19 +376,16 @@ var inoutFlag = false;
 var boardingTime = '';
 
 var test = 0;
-var xArray = new Array("");
-var yArray = new Array("");
 
 var i = 0;
 
+var SA;
+var EA;
+
 function showPoint(x, y, bus, checkPosition) {
-    
+	
 	var bb = 0.1;
 	
-	xArray.push(x);
-	yArray.push(y);
-	
-    setInterval(function(){
 	    if( checkPosition ){
 	    	if(i != 0){
 			    var oldStartAngle = (0 + (bb*(i-1))) * Math.PI;
@@ -394,10 +393,10 @@ function showPoint(x, y, bus, checkPosition) {
 			    context.beginPath();
 				if( bus == 'R' ){
 					// Define the circle using an arc.
-					context.arc(x+bus1X , y , 10, oldStartAngle, oldEndAngle, true);	
+					context.arc(1100 , 30 , 10, oldStartAngle, oldEndAngle, true);
 				} else {
 					// Define the circle using an arc.
-					context.arc(x+bus2X , y+bus2Y , 10, oldStartAngle, oldEndAngle, true);
+					context.arc(25 , 200 , 10, oldStartAngle, oldEndAngle, true);
 				}
 			    context.lineWidth = 15;
 			
@@ -410,11 +409,16 @@ function showPoint(x, y, bus, checkPosition) {
 			    context.beginPath();
 				if( bus == 'R' ){
 					// Define the circle using an arc.
-					context.arc(x+bus1X , y , 10, startAngle, endAngle, true);
+					//context.arc(x+bus1X , y , 10, startAngle, endAngle, true);
+					context.arc(1100 , 30 , 10, startAngle, endAngle, true);
 				} else {
 					// Define the circle using an arc.
 					context.arc(x+bus2X , y+bus2Y , 10, startAngle, endAngle, true);
 				}
+				
+				SA = startAngle;
+				EA = endAngle;
+				
 			    context.lineWidth = 15;
 			
 			    // line color
@@ -423,14 +427,8 @@ function showPoint(x, y, bus, checkPosition) {
 			    i++;
 	    } else {
 	    	
-	    	console.log('i : ' + i);
-	    	for( var j=1; j<=i; j++ ){
-	    		context.clearRect(xArray[j], yArray[j], 20, 20);
-	    	}
-	    	xArray.splice(i, 1);
-	    	xArray.splice(i, 1);
+	    	context.clearRect(1080, 10, 40, 40);
 	    	
-	    	/*
 	    	if( bus == 'R' ){
 	    		context.clearRect(bus1X, bus1Y, bus1Image.width*2 ,bus1Image.height*2);
 	    		context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
@@ -438,12 +436,9 @@ function showPoint(x, y, bus, checkPosition) {
 	    		context.clearRect(bus2X, bus2Y, bus2Image.width*2 ,bus2Image.height*2);
 	    		context.drawImage(bus2Image, bus2X, bus2Y, bus2Image.width*2, bus2Image.height*2);
 	    	}
-	    	*/
 	    	i = 0;
 	    }
-	    
-    }, 10); 
-
+	
 }
 
 function k_combinations(set, k) {
@@ -528,14 +523,28 @@ function stopDraw()
 }
 
 function whatKey(evt) {
+	
+	var startX = 1100;
+	var endY = 30;
+	
 	switch (evt.keyCode) {
       // Left arrow.
 		case 37:
    			  setInterval(function(){
    				  if(bus1X > 740){
+   					context.clearRect(startX, endY, 40, 40);
    					context.clearRect(bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
 	   			    bus1X = bus1X - 5;
 	   			    context.drawImage(bus1Image, bus1X, bus1Y, bus1Image.width*2, bus1Image.height*2);
+	   			    
+					context.beginPath();
+					startX = startX - 5;
+	   				/* context.arc(1100, 30 , 10, startAngle, endAngle, true); */
+	   				context.arc(startX, 30 , 10, SA, EA, true);
+				    context.lineWidth = 15;
+				    // line color
+				    context.strokeStyle = 'gold';
+				    context.stroke();
    				  }
    			  }, 50);  
 	   	break;
@@ -549,6 +558,10 @@ function whatKey(evt) {
    			  }, 50);  
 	   	break;
    }
+}
+
+function aa(){
+	showPoint(10, 10, 'R', true);
 }
     </script>
   </body>
