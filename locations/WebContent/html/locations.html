@@ -400,12 +400,12 @@ var context = canvas.getContext("2d");
 var bus1Image = new Image();
 var bus2Image = new Image();
 var stopImage = new Image();
-var bulbImage = new Image();
+var gifImage = new Image();
 
 bus1Image.src = "../images/bus_red.png";
 bus2Image.src = "../images/bus_green.png";
 stopImage.src ="../images/busline_blue.png";
-bulbImage.src = "../images/pic_bulbon.gif";
+gifImage.src = "../images/smile.gif";
 
 var stopX = 00;   // current bus1 position X
 var stopY = 100;  // current bus1 position Y
@@ -457,7 +457,8 @@ function showPoint(x, y, bus, checkPosition) {
 				if( bus == 'R' ){
 					// Define the circle using an arc.
 					//context.arc(1100 , 30 , 10, oldStartAngle, oldEndAngle, true);
-					context.arc(startX , 30 , 10, oldStartAngle, oldEndAngle, true);
+					//context.arc(startX , 30 , 10, oldStartAngle, oldEndAngle, true);
+					context.drawImage(gifImage, startX, 5, gifImage.width/5, gifImage.height/5);
 				} else {
 					// Define the circle using an arc.
 					context.arc(25 , 200 , 10, oldStartAngle, oldEndAngle, true);
@@ -475,7 +476,8 @@ function showPoint(x, y, bus, checkPosition) {
 					// Define the circle using an arc.
 					//context.arc(x+bus1X , y , 10, startAngle, endAngle, true);
 					//context.arc(1100 , 30 , 10, startAngle, endAngle, true);
-					context.arc(startX , 30 , 10, startAngle, endAngle, true);
+					//context.arc(startX , 30 , 10, startAngle, endAngle, true);
+					context.drawImage(gifImage, startX, 5, gifImage.width/5, gifImage.height/5);
 				} else {
 					// Define the circle using an arc.
 					context.arc(x+bus2X , y+bus2Y , 10, startAngle, endAngle, true);
@@ -616,7 +618,8 @@ function whatKey(evt) {
 					context.beginPath();
 					startX = startX - 5;
 	   				/* context.arc(1100, 30 , 10, startAngle, endAngle, true); */
-	   				context.arc(startX, 30 , 10, SA, EA, true);
+	   				//context.arc(startX, 30 , 10, SA, EA, true);
+	   				context.drawImage(gifImage, startX, 5, gifImage.width/5, gifImage.height/5);
 				    context.lineWidth = 15;
 				    // line color
 				    context.strokeStyle = 'gold';
